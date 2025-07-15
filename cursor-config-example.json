@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "prompt-format-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "prompt-format-mcp",
+        "--stdio"
+      ],
+      "env": {
+        "SILICONFLOW_API_KEY": "sk-esvuhwigovazzljmtcmwgsmwcrgbrnrtzokaireqyytezgdh"
+      }
+    }
+  }
+} 

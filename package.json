@@ -1,0 +1,69 @@
+{
+  "name": "prompt-format-mcp",
+  "version": "1.0.0",
+  "description": "AI-powered prompt formatting MCP server for Cursor IDE with SiliconFlow API integration",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "prompt-format-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "cursor-config-example.json",
+    "USAGE_EXAMPLES.md",
+    "LOCAL_TESTING.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx --watch src/index.ts",
+    "test": "echo 'Testing MCP server...' && echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | node dist/index.js | grep -q 'format-prompt' && echo 'Tests passed!'",
+    "test:local": "node test-local.js",
+    "test:manual": "node test-manual.js",
+    "test:quick": "echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | node dist/index.js",
+    "test:simple": "node simple-test.js",
+    "test:demo": "node demo-test.js",
+    "prepare-publish": "node prepare-publish.js",
+    "publish:quick": "./quick-publish.sh",
+    "prepack": "npm run build && npm run test",
+    "prepublishOnly": "npm run prepack"
+  },
+  "keywords": [
+    "mcp",
+    "prompt",
+    "format",
+    "ai",
+    "cursor",
+    "siliconflow",
+    "model-context-protocol",
+    "prompt-engineering",
+    "ai-tools",
+    "development-tools",
+    "code-assistant"
+  ],
+  "author": "upjiang <j530274949@qq.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "tsx": "^4.19.3",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/prompt-format-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/prompt-format-mcp/issues"
+  },
+  "homepage": "https://github.com/yourusername/prompt-format-mcp#readme"
+} 
