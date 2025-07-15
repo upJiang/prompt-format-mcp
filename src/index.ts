@@ -4,13 +4,18 @@ import { config } from "dotenv";
 import { resolve } from "path";
 import { Logger } from "./utils/helpers.js";
 
-// 加载环境变量
-config({ path: resolve(process.cwd(), ".env") });
+// 尝试加载环境变量（如果存在.env文件）
+try {
+  config({ path: resolve(process.cwd(), ".env") });
+} catch (error) {
+  // 忽略.env文件不存在的错误，因为在MCP场景下环境变量由Cursor配置传递
+}
 
 // 检查必要的环境变量
 if (!process.env.SILICONFLOW_API_KEY) {
   console.error("错误: 请设置环境变量 SILICONFLOW_API_KEY");
-  console.error("您可以在 .env 文件中配置这个变量，例如：");
+  console.error("在MCP服务器配置中，请确保在env字段中设置了此变量");
+  console.error("或者在 .env 文件中配置这个变量，例如：");
   console.error("SILICONFLOW_API_KEY=your_api_key_here");
   process.exit(1);
 }

@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "prompt-format-mcp",
+        "prompt-format-mcp@1.0.2",
         "--stdio"
       ],
       "env": {

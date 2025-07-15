@@ -26,16 +26,18 @@ export class SiliconFlowClient {
             'Authorization': `Bearer ${this.apiKey}`,
             'Content-Type': 'application/json'
           },
-          timeout: 30000 // 30秒超时
+          timeout: 60000 // 增加到60秒超时
         }
       );
 
       return response.data;
     } catch (error: any) {
-      if (error.response) {
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        throw new Error(`网络请求失败: timeout of ${error.timeout || 60000}ms exceeded，请检查网络连接和API地址`);
+      } else if (error.response) {
         throw new Error(`API调用失败: ${error.response.status} - ${error.response.data?.error?.message || error.response.statusText}`);
       } else if (error.request) {
-        throw new Error('网络请求失败，请检查网络连接');
+        throw new Error(`网络请求失败，请检查网络连接和API地址: ${error.message}`);
       } else {
         throw new Error(`请求配置错误: ${error.message}`);
       }

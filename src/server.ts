@@ -17,6 +17,12 @@ export class PromptFormatMcpServer {
       throw new Error('SILICONFLOW_API_KEY environment variable is required');
     }
 
+    // 调试信息
+    Logger.log(`环境变量加载状态:`);
+    Logger.log(`- API Key: ${apiKey ? `已设置 (长度: ${apiKey.length})` : '未设置'}`);
+    Logger.log(`- Base URL: ${process.env.SILICONFLOW_BASE_URL || '使用默认值'}`);
+    Logger.log(`- Model: ${process.env.MODEL_NAME || '使用默认值'}`);
+
     // 创建API客户端
     this.apiClient = new SiliconFlowClient(
       apiKey,
