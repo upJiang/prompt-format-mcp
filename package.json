@@ -1,6 +1,6 @@
 {
   "name": "prompt-format-mcp",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "AI-powered prompt formatting MCP server for Cursor IDE with SiliconFlow API integration",
   "type": "module",
   "main": "dist/index.js",

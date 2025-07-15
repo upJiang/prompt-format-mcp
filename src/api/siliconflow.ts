@@ -17,31 +17,62 @@ export class SiliconFlowClient {
    * 调用 SiliconFlow API
    */
   private async callAPI(request: SiliconFlowRequest): Promise<SiliconFlowResponse> {
-    try {
-      const response: AxiosResponse<SiliconFlowResponse> = await axios.post(
-        `${this.baseUrl}/chat/completions`,
-        request,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          timeout: 60000 // 增加到60秒超时
-        }
-      );
+    const maxRetries = 3;
+    let lastError: Error | null = null;
 
-      return response.data;
-    } catch (error: any) {
-      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-        throw new Error(`网络请求失败: timeout of ${error.timeout || 60000}ms exceeded，请检查网络连接和API地址`);
-      } else if (error.response) {
-        throw new Error(`API调用失败: ${error.response.status} - ${error.response.data?.error?.message || error.response.statusText}`);
-      } else if (error.request) {
-        throw new Error(`网络请求失败，请检查网络连接和API地址: ${error.message}`);
-      } else {
-        throw new Error(`请求配置错误: ${error.message}`);
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response: AxiosResponse<SiliconFlowResponse> = await axios.post(
+          `${this.baseUrl}/chat/completions`,
+          request,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            timeout: 90000, // 增加到90秒超时
+            validateStatus: (status) => status < 500 // 只有5xx错误才重试
+          }
+        );
+
+        return response.data;
+      } catch (error: any) {
+        lastError = error;
+        
+        // 记录尝试信息
+        console.log(`[INFO] API调用尝试 ${attempt}/${maxRetries} 失败`);
+        
+        if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+          console.log(`[INFO] 超时错误，${attempt < maxRetries ? '重试中...' : '已达到最大重试次数'}`);
+          if (attempt < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 2000 * attempt)); // 递增延迟
+            continue;
+          }
+          throw new Error(`网络请求超时: 已尝试 ${maxRetries} 次，请检查网络连接`);
+        } else if (error.response && error.response.status >= 500) {
+          console.log(`[INFO] 服务器错误 ${error.response.status}，${attempt < maxRetries ? '重试中...' : '已达到最大重试次数'}`);
+          if (attempt < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+            continue;
+          }
+          throw new Error(`服务器错误: ${error.response.status} - ${error.response.data?.error?.message || error.response.statusText}`);
+        } else if (error.response) {
+          // 4xx错误不重试
+          throw new Error(`API调用失败: ${error.response.status} - ${error.response.data?.error?.message || error.response.statusText}`);
+        } else if (error.request) {
+          console.log(`[INFO] 网络请求错误，${attempt < maxRetries ? '重试中...' : '已达到最大重试次数'}`);
+          if (attempt < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+            continue;
+          }
+          throw new Error(`网络请求失败: ${error.message}`);
+        } else {
+          throw new Error(`请求配置错误: ${error.message}`);
+        }
       }
     }
+
+    throw lastError || new Error('API调用失败');
   }
 
   /**
