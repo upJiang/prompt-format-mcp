@@ -25,7 +25,7 @@ export class PromptFormatMcpServer {
     // 创建MCP服务器
     this.server = new McpServer({
       name: "prompt-format-mcp",
-      version: "1.0.0",
+      version: "1.0.11",
     }, {
       capabilities: {
         tools: {},
@@ -55,7 +55,7 @@ export class PromptFormatMcpServer {
             1000
           );
 
-          // 提供结构化的优化结果和下一步指引
+          // 只返回优化结果，由用户决定是否编辑和确认
           const result = `## 🔧 提示词优化结果
 
 ### 原始提示词
@@ -72,17 +72,12 @@ ${optimized}
 
 ### 📋 下一步操作
 
-**方式一：直接使用优化结果**
-如果您对优化结果满意，请使用 \`confirm-and-continue\` 工具：
-- 将上面的优化后提示词复制到 \`finalPrompt\` 参数中
-
-**方式二：编辑后使用** 
-如果您想修改优化结果：
-1. 复制上面的优化后提示词
-2. 根据需要进行编辑修改  
+**请您编辑确认：**
+1. 查看上面的优化结果
+2. 根据需要编辑修改优化后的提示词（可选）
 3. 使用 \`confirm-and-continue\` 工具提交您的最终版本
 
-> 💡 **重要**: 使用 \`confirm-and-continue\` 后，AI将基于您确认的提示词来回答您的问题。`;
+> 💡 **说明**: 使用 \`confirm-and-continue\` 后，AI将基于您确认的提示词来回答您的问题。`;
 
           return {
             content: [
@@ -118,24 +113,22 @@ ${optimized}
         try {
           Logger.log(`确认使用提示词，长度: ${finalPrompt.length} 字符`);
 
-          // 返回格式化的确认信息，明确指示AI基于新提示词工作
+          // 返回格式化的确认信息，告诉AI立即基于新提示词工作
           const result = `✅ **提示词已确认并生效**
 
 ---
 
-**🤖 AI角色设定**：
+**🤖 新的AI角色设定**：
 
 ${finalPrompt}
 
 ---
 
-**🚀 准备就绪**
+**🚀 立即生效**
 
-上述提示词已确认并生效。我现在将基于这个提示词为您提供服务。
+上述提示词已确认。现在，请作为一个专业的全栈AI网站开发顾问，基于上述角色设定，立即为用户的全栈AI网站开发需求提供详细的指导和建议。
 
-**请重新提出您的问题**，我会按照上述角色设定来为您提供专业的回答和建议。
-
-> 💡 对话模式已切换，请开始您的咨询。`;
+**无需用户重新提问，请直接开始提供系统性的开发指导。**`;
 
           return {
             content: [

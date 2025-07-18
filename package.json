@@ -1,6 +1,6 @@
 {
   "name": "prompt-format-mcp",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "description": "Simple prompt optimization MCP server with SiliconFlow API integration",
   "type": "module",
   "main": "dist/index.js",
