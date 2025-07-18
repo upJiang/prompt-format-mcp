@@ -1,6 +1,6 @@
 {
   "name": "prompt-format-mcp",
-  "version": "1.0.11",
+  "version": "1.1.1",
   "description": "Simple prompt optimization MCP server with SiliconFlow API integration",
   "type": "module",
   "main": "dist/index.js",
@@ -9,23 +9,13 @@
   },
   "files": [
     "dist",
-    "README.md",
-    "cursor-config-example.json",
-    "USAGE_EXAMPLES.md",
-    "LOCAL_TESTING.md"
+    "README.md"
   ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx --watch src/index.ts",
     "test": "echo 'Testing MCP server...' && echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | node dist/index.js | grep -q 'optimize-prompt' && echo 'Tests passed!'",
-    "test:local": "node test-local.js",
-    "test:manual": "node test-manual.js",
-    "test:quick": "echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | node dist/index.js",
-    "test:simple": "node simple-test.js",
-    "test:demo": "node demo-test.js",
-    "prepare-publish": "node prepare-publish.js",
-    "publish:quick": "./quick-publish.sh",
     "prepack": "npm run build && npm run test",
     "prepublishOnly": "npm run prepack"
   },
@@ -58,10 +48,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/prompt-format-mcp.git"
+    "url": "git+https://github.com/upjiang/prompt-format-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/prompt-format-mcp/issues"
+    "url": "https://github.com/upjiang/prompt-format-mcp/issues"
   },
-  "homepage": "https://github.com/yourusername/prompt-format-mcp#readme"
+  "homepage": "https://github.com/upjiang/prompt-format-mcp#readme"
 } 
