@@ -1,7 +1,7 @@
 {
   "name": "prompt-format-mcp",
-  "version": "1.0.4",
-  "description": "AI-powered prompt formatting MCP server for Cursor IDE with SiliconFlow API integration",
+  "version": "1.0.8",
+  "description": "Simple prompt optimization MCP server with SiliconFlow API integration",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -18,7 +18,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx --watch src/index.ts",
-    "test": "echo 'Testing MCP server...' && echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | node dist/index.js | grep -q 'format-prompt' && echo 'Tests passed!'",
+    "test": "echo 'Testing MCP server...' && echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | node dist/index.js | grep -q 'optimize-prompt' && echo 'Tests passed!'",
     "test:local": "node test-local.js",
     "test:manual": "node test-manual.js",
     "test:quick": "echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | node dist/index.js",
@@ -32,15 +32,13 @@
   "keywords": [
     "mcp",
     "prompt",
-    "format",
+    "optimization",
     "ai",
-    "cursor",
     "siliconflow",
     "model-context-protocol",
     "prompt-engineering",
     "ai-tools",
-    "development-tools",
-    "code-assistant"
+    "development-tools"
   ],
   "author": "upjiang <j530274949@qq.com>",
   "license": "MIT",

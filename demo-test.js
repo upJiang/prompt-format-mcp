@@ -97,8 +97,10 @@ async function main() {
     id: 2,
     method: "tools/call",
     params: {
-      name: "check-connection",
-      arguments: {}
+              name: "optimize-prompt",
+        arguments: {
+          content: "帮我写一个Python函数"
+        }
     }
   });
 

@@ -123,8 +123,10 @@ async function testConnection() {
     id: 2,
     method: "tools/call",
     params: {
-      name: "check-connection",
-      arguments: {}
+              name: "optimize-prompt", 
+        arguments: {
+          content: "写一个关于AI的故事"
+        }
     }
   });
 

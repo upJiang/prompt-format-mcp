@@ -27,13 +27,4 @@ export interface SiliconFlowRequest {
   max_tokens?: number;
   temperature?: number;
   stream?: boolean;
-}
-
-export type FormatStyle = 'basic' | 'professional' | 'conversational' | 'technical';
-
-export interface FormatOptions {
-  style: FormatStyle;
-  addExamples?: boolean;
-  addConstraints?: boolean;
-  preserveOriginal?: boolean;
 } 

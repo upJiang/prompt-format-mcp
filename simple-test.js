@@ -93,10 +93,12 @@ async function main() {
     jsonrpc: "2.0",
     id: 2,
     method: "tools/call",
-    params: {
-      name: "check-connection",
-      arguments: {}
-    }
+          params: {
+        name: "optimize-prompt",
+        arguments: {
+          content: "测试提示词"
+        }
+      }
   });
 
   if (connectionResult.success) {

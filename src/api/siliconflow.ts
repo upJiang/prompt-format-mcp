@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { SiliconFlowRequest, SiliconFlowResponse, FormatStyle } from '../types/index.js';
-import { SYSTEM_PROMPTS, OPTIMIZATION_PROMPT, ANALYSIS_PROMPT } from '../formatters/prompts.js';
+import { SiliconFlowRequest, SiliconFlowResponse } from '../types/index.js';
 
 export class SiliconFlowClient {
   private apiKey: string;
@@ -30,8 +29,8 @@ export class SiliconFlowClient {
               'Authorization': `Bearer ${this.apiKey}`,
               'Content-Type': 'application/json'
             },
-            timeout: 90000, // 增加到90秒超时
-            validateStatus: (status) => status < 500 // 只有5xx错误才重试
+            timeout: 90000,
+            validateStatus: (status) => status < 500
           }
         );
 
@@ -39,28 +38,21 @@ export class SiliconFlowClient {
       } catch (error: any) {
         lastError = error;
         
-        // 记录尝试信息
-        console.log(`[INFO] API调用尝试 ${attempt}/${maxRetries} 失败`);
-        
         if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-          console.log(`[INFO] 超时错误，${attempt < maxRetries ? '重试中...' : '已达到最大重试次数'}`);
           if (attempt < maxRetries) {
-            await new Promise(resolve => setTimeout(resolve, 2000 * attempt)); // 递增延迟
+            await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
             continue;
           }
           throw new Error(`网络请求超时: 已尝试 ${maxRetries} 次，请检查网络连接`);
         } else if (error.response && error.response.status >= 500) {
-          console.log(`[INFO] 服务器错误 ${error.response.status}，${attempt < maxRetries ? '重试中...' : '已达到最大重试次数'}`);
           if (attempt < maxRetries) {
             await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
             continue;
           }
           throw new Error(`服务器错误: ${error.response.status} - ${error.response.data?.error?.message || error.response.statusText}`);
         } else if (error.response) {
-          // 4xx错误不重试
           throw new Error(`API调用失败: ${error.response.status} - ${error.response.data?.error?.message || error.response.statusText}`);
         } else if (error.request) {
-          console.log(`[INFO] 网络请求错误，${attempt < maxRetries ? '重试中...' : '已达到最大重试次数'}`);
           if (attempt < maxRetries) {
             await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
             continue;
@@ -76,35 +68,21 @@ export class SiliconFlowClient {
   }
 
   /**
-   * 格式化提示词
-   */
-  async formatPrompt(content: string, style: FormatStyle = 'basic'): Promise<string> {
-    const systemPrompt = SYSTEM_PROMPTS[style];
-    
-    const request: SiliconFlowRequest = {
-      model: this.modelName,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: content }
-      ],
-      temperature: 0.3,
-      max_tokens: 4000
-    };
-
-    const response = await this.callAPI(request);
-    
-    if (!response.choices || response.choices.length === 0) {
-      throw new Error('API返回的响应格式不正确');
-    }
-
-    return response.choices[0].message.content.trim();
-  }
-
-  /**
    * 优化提示词
    */
   async optimizePrompt(content: string): Promise<string> {
-    const prompt = OPTIMIZATION_PROMPT.replace('{content}', content);
+    const prompt = `请优化以下提示词，使其更清晰、准确、易于AI理解。要求：
+
+1. 保持原始意图不变
+2. 提高指令清晰度
+3. 添加必要的上下文
+4. 使用结构化表达
+5. 确保可执行性
+
+请直接输出优化后的提示词，不要添加额外说明。
+
+原始提示词：
+${content}`;
     
     const request: SiliconFlowRequest = {
       model: this.modelName,
@@ -122,49 +100,5 @@ export class SiliconFlowClient {
     }
 
     return response.choices[0].message.content.trim();
-  }
-
-  /**
-   * 分析提示词质量
-   */
-  async analyzePrompt(content: string): Promise<string> {
-    const prompt = ANALYSIS_PROMPT.replace('{content}', content);
-    
-    const request: SiliconFlowRequest = {
-      model: this.modelName,
-      messages: [
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 2000
-    };
-
-    const response = await this.callAPI(request);
-    
-    if (!response.choices || response.choices.length === 0) {
-      throw new Error('API返回的响应格式不正确');
-    }
-
-    return response.choices[0].message.content.trim();
-  }
-
-  /**
-   * 检查API连接
-   */
-  async checkConnection(): Promise<boolean> {
-    try {
-      const request: SiliconFlowRequest = {
-        model: this.modelName,
-        messages: [
-          { role: 'user', content: 'Hello' }
-        ],
-        max_tokens: 10
-      };
-
-      await this.callAPI(request);
-      return true;
-    } catch (error) {
-      return false;
-    }
   }
 } 

@@ -38,8 +38,10 @@ const testConnection = () => {
     id: 2,
     method: "tools/call",
     params: {
-      name: "check-connection",
-      arguments: { random_string: "test" }
+      name: "optimize-prompt",
+      arguments: { 
+        content: "测试优化提示词" 
+      }
     }
   }) + '\n';
   
